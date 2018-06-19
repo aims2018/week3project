@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -22,6 +23,9 @@ public class GUI extends JFrame implements ActionListener,ItemListener,Runnable 
 	private String message;
 	private MessagePanel messagePanel;
 	private JComboBox size;
+	private Thread thread;
+	private boolean keepGoing;
+	private int startX;
 	
 	public GUI(String title) {
 		super(title);
@@ -80,8 +84,15 @@ public class GUI extends JFrame implements ActionListener,ItemListener,Runnable 
 		   g.setFont(font);
 		   
 		   g.setColor(Color.white);
+		   
+		   FontMetrics metrics = g.getFontMetrics();
+		   
+		   int width = metrics.stringWidth(message);
+		   
+		   if (startX + width < 0)
+			   startX = 480;
 		
-		   g.drawString(message, 20, 100);
+		   g.drawString(message, startX, 100);
 	   }
  	   
 	}
@@ -97,7 +108,13 @@ public class GUI extends JFrame implements ActionListener,ItemListener,Runnable 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		
+		while(keepGoing) {
+			pause(0.1);
+			
+			startX -= 20;
+			
+			messagePanel.repaint();
+		}
 	}
 
 	@Override
@@ -110,7 +127,11 @@ public class GUI extends JFrame implements ActionListener,ItemListener,Runnable 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		keepGoing = true;
 		
+		thread = new Thread(this);
+		
+		thread.start();
 	}
 	
 

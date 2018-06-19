@@ -514,7 +514,7 @@ public class Words {
                          "capitalization",
                          "among"};
        
-       return("");
+       return(words[(int)(words.length*Math.random())].toUpperCase());
 	}
 
 }
